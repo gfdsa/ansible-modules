@@ -117,7 +117,7 @@ def main():
             'bind_password': {'required': True, 'no_log': True},
             'ldap_type':     {'default': 'ldap', 'choices': ['ldap', 'ad']},
             'ldap_uri':      {'aliases': ['ldap_url'], 'default': 'ldaps://localhost:636'},
-            'new_password':  {'required': True, 'aliases': ['password'], 'not_log': True},
+            'new_password':  {'required': True, 'aliases': ['password'], 'no_log': True},
             'timeout':       {'default': 10, 'type': 'int'},
             'user_dn':       {'required': True}
         }
@@ -140,7 +140,7 @@ def main():
         with ldap_connection(p.ldap_uri, p.bind_dn, p.bind_password, p.timeout, opts) as c:
             change_password(c, p.user_dn, p.new_password)
 
-    except ldap.LDAPError, e:
+    except ldap.LDAPError as e:
         module.fail_json(msg=e.message)
     else:
         module.exit_json(changed=True)
