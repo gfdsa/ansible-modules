@@ -95,6 +95,8 @@ def ldap_connection(uri, bind_dn=None, bind_password=None, timeout=10, opts={}):
         for k, v in opts.items():
             conn.set_option(k, v)
 
+        conn.set_option(ldap.OPT_X_TLS_NEWCTX, 0)
+
         if bind_dn and bind_password:
             conn.simple_bind_s(bind_dn, bind_password)
 
