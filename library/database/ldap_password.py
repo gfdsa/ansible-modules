@@ -61,6 +61,10 @@ options:
     description:
       - Distinguished name (DN) of the user to change the password for.
     required: true
+  validate_certs:
+    description:
+      - To validate the certs or not to validate certs
+    default: True
 '''
 
 EXAMPLES = '''
@@ -119,7 +123,8 @@ def main():
             'ldap_uri':      {'aliases': ['ldap_url'], 'default': 'ldaps://localhost:636'},
             'new_password':  {'required': True, 'aliases': ['password'], 'no_log': True},
             'timeout':       {'default': 10, 'type': 'int'},
-            'user_dn':       {'required': True}
+            'user_dn':       {'required': True},
+            'validate_certs':{'default': True}
         }
     )
 
@@ -135,7 +140,8 @@ def main():
     else:
         change_password = change_password_ldap
         opts = {}
-
+    if not p.validate_certs:
+        opts[ldap.OPT_X_TLS_REQUIRE_CERT]=ldap.OPT_X_TLS_NEVER
     try:
         with ldap_connection(p.ldap_uri, p.bind_dn, p.bind_password, p.timeout, opts) as c:
             change_password(c, p.user_dn, p.new_password)
