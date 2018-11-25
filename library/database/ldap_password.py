@@ -85,8 +85,10 @@ except ImportError:
 
 
 @contextmanager
-def ldap_connection(uri, bind_dn=None, bind_password=None, timeout=10, opts={}):
+def ldap_connection(uri, bind_dn=None, bind_password=None, timeout=10, validate_certs=True, opts={}):
     try:
+        if not validate_certs:
+            ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
         conn = ldap.initialize(uri)
         conn.protocol_version = ldap.VERSION3
         conn.timeout = int(timeout)
@@ -142,10 +144,8 @@ def main():
     else:
         change_password = change_password_ldap
         opts = {}
-    if not p.validate_certs:
-        opts[ldap.OPT_X_TLS_REQUIRE_CERT]=ldap.OPT_X_TLS_NEVER
     try:
-        with ldap_connection(p.ldap_uri, p.bind_dn, p.bind_password, p.timeout, opts) as c:
+        with ldap_connection(p.ldap_uri, p.bind_dn, p.bind_password, p.timeout, p.validate_certs, opts) as c:
             change_password(c, p.user_dn, p.new_password)
 
     except ldap.LDAPError as e:
