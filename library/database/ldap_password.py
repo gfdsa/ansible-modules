@@ -64,7 +64,7 @@ options:
   validate_certs:
     description:
       - To validate the certs or not to validate certs
-    default: True
+    default: true
 '''
 
 EXAMPLES = '''
@@ -96,11 +96,8 @@ def ldap_connection(uri, bind_dn=None, bind_password=None, timeout=10, validate_
             conn.set_option(k, v)
 
         if not validate_certs:
-            module.log(msg='Disabling certificates validation')
             conn.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
             conn.set_option(ldap.OPT_X_TLS_NEWCTX, 0)
-        else:
-            module.log(msg='Not disabling certificates validation')
 
         if bind_dn and bind_password:
             conn.simple_bind_s(bind_dn, bind_password)
@@ -131,7 +128,7 @@ def main():
             'new_password':  {'required': True, 'aliases': ['password'], 'no_log': True},
             'timeout':       {'default': 10, 'type': 'int'},
             'user_dn':       {'required': True},
-            'validate_certs':{'default': True}
+            'validate_certs':{'default': True, 'type': 'bool'}
         }
     )
 
