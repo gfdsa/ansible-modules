@@ -99,6 +99,8 @@ def ldap_connection(uri, bind_dn=None, bind_password=None, timeout=10, validate_
             module.log(msg='Disabling certificates validation')
             conn.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
             conn.set_option(ldap.OPT_X_TLS_NEWCTX, 0)
+        else:
+            module.log(msg='Disabling certificates validation')
 
         if bind_dn and bind_password:
             conn.simple_bind_s(bind_dn, bind_password)
