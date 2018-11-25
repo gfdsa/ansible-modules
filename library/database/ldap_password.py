@@ -87,8 +87,6 @@ except ImportError:
 @contextmanager
 def ldap_connection(uri, bind_dn=None, bind_password=None, timeout=10, validate_certs=True, opts={}):
     try:
-        if not validate_certs:
-            ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
         conn = ldap.initialize(uri)
         conn.protocol_version = ldap.VERSION3
         conn.timeout = int(timeout)
@@ -97,6 +95,10 @@ def ldap_connection(uri, bind_dn=None, bind_password=None, timeout=10, validate_
         for k, v in opts.items():
             conn.set_option(k, v)
 
+        if not validate_certs:
+            module.log(msg='Disabling certificates validation')
+            conn.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
+            conn.set_option(ldap.OPT_X_TLS_NEWCTX, 0)
 
         if bind_dn and bind_password:
             conn.simple_bind_s(bind_dn, bind_password)
@@ -137,7 +139,7 @@ def main():
     # Create type object as namespace for module params
     p = type('Params', (), module.params)
 
-    if p.ldap_type == 'ads':
+    if p.ldap_type == 'ad':
         change_password = change_password_ad
         opts = {ldap.OPT_X_TLS: ldap.OPT_X_TLS_DEMAND, ldap.OPT_X_TLS_DEMAND: True}
     else:
