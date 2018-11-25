@@ -20,7 +20,7 @@ from __future__ import with_statement
 
 DOCUMENTATION = '''
 ---
-module: ldap_passwd
+module: ldap_password
 author: Jakub Jirutka
 version_added: "never"
 short_description: Change password of an LDAP or Active Directory user.
