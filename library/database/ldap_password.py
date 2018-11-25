@@ -138,7 +138,7 @@ def main():
     # Create type object as namespace for module params
     p = type('Params', (), module.params)
 
-    if p.ldap_type == 'ad':
+    if p.ldap_type == 'ads':
         change_password = change_password_ad
         opts = {ldap.OPT_X_TLS: ldap.OPT_X_TLS_DEMAND, ldap.OPT_X_TLS_DEMAND: True}
     else:
